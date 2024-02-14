@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        p {padding: 5px; border: 2px green dashed;}
+        .sup {color: purple;} .def {color: orange;} a:hover {color: green;}
+    </style>
+    <title>0203_django_mysql_connect_demo.html</title>
+</head>
+<body>
+    <h2>0203_django_notes2</h2>
+    <a href="#botp" name="topg">Link to page bottom</a>
+    <p>
+        ___# setting up the lab3 booking html demo <br>----------------------forms.py <br>
+        <sup><a href="sup" class="sup">
+            from .models import Booking <br>from django import forms <br>
+        </a></sup>
+        <br>
+        <a href="clas" class="clas">class</a> BookingForm(forms.ModelForm): <br>
+        | .. <a href="clas" class="clas">class</a> Meta: <br>
+        | ...... model = Booking <br>
+        | ...... fields = "__all__" <br>
+        <br><br>
+        ___# run migration cmds  <br>
+        > python manage.py makemigrations <br>
+        > python manage.py migrate <br>
+        <br><br>
+    </p>
+    <a href="#botp" name="topg">Link to page bottom</a>
+    <p>
+        ___# urls.py <br>-------------------<br>
+        urlpatterns = [ <br>
+        | .. path('', views.home), <br>
+        | .. path('home', views.home, name="home"), <br>
+        | .. path('home2', views.home1), <br>
+        | <br>
+        | .. #203 menu urls add. <br>
+        | .. path('menu/', views.menu, name="menu"), <br>
+        | .. path('menu_item/< int:pk>/', views.display_menu_item, name="menu_item"), <br>
+        | <br>
+        | .. #203 header links add <br>
+        | .. path('about/', views.about, name="about"), <br>
+        | <br>
+        | .. #203 book reservations add <br>
+        | .. path('book/', views.book, name="book"), <br>
+        | .. path('bookings/', views.bookings, name="bookings"), <br>
+        ] <br>
+
+
+        <br><br>
+    </p>
+    <a href="#botp" name="topg">Link to page bottom</a>
+    <p>
+        ____# views.py import list <br>-------------------------<br>
+        <sup><a href="sup" class="sup">
+            from .models import Booking, Menu <br>
+            from django import forms <br>
+            from django.shortcuts import render <br>
+            from django.core import serializers <br>
+            from datetime import datetime <br>
+            import json <br>
+            from .forms import BookingForm <br>
+            from django.views.decorators.csrf import csrf_exempt <br>
+            from django.http import HttpResponse <br>
+
+        </a></sup>
+        <br>
+    </p>
+    <p>
+        ___# views.py edits1 add the book() method <br>------------------------<br>
+        <a href="def" class="def">
+        def</a> book(request): <br>
+        | .. form = BookingForm() <br>
+        | .. if request.method == 'POST': <br>
+        | ...... form = BookingForm(request.POST) <br>
+        | ...... if form.is_valid(): <br>
+        | .......... form.save() <br>
+        | .. context = {'form':form} <br>
+        | .. return render(request, 'book.html', context) <br>
+
+        <br><br>
+    </p>
+
+    <p>
+
+        ___# views.py edits2 add the bookings() method <br>------------------------<br>
+        <a href="def" class="def">
+        def</a> bookings(request): <br>
+        | .. date = request.GET.get('date', datetime.today().date()) <br>
+        | .. bookings = Booking.objects.all() <br>
+        | .. booking_json = serializers.serialize('json', bookings)  <br>
+        | .. return render(request, 'booking.html', {"bookings": booking_json})
+        <br><br>
+    </p>
+    <p>
+        ___# book.html add code to script tags <br>-----------------------------<br>
+        < script> <br>
+        | .. console.log("Hello") <br>
+        | .. document.getElementById("id_<a href="rese" class="rese">reservation_date</a>") <br>
+        | <br>
+        | .. _____#203 suffix code by adding a filter <br>| .. ------------------------------<br>
+        | .. Booking.objects.filter(<a href="rese" class="rese">reservation_date</a>__type="date")  <br>
+        | ..   <br>
+        < /script> <br>
+
+
+        <br><br>
+    </p>
+    <p>
+        ____# models.py <br>----------------------------#0203 demo for booking <br><br>
+        <a href="clas" class="clas">class</a> Booking(models.Model): <br>
+        | .. first_name = models.CharField(max_length=200) <br>
+
+        | .. <a href="rese" class="rese">reservation_date = models.DateField() </a> <br>
+        | .. reservation_slot = models.SmallIntegerField(default=10) <br>
+        <br>
+        | .. def __str__(self): <br>
+        | ...... return self.first_name <br>
+        <br><br>
+    </p>
+    <p>
+        ___# bookings.html > create new constant ' bookings ' <br>---------------------<br>
+        const bookings = JSON.parse('{{ bookings|safe }}'); <br>
+        console.log(bookings) <br>
+        <br>
+        const pretty_json = JSON.stringify(bookings, null, 2)
+        <br><br>
+    </p>
+    <p>
+        ___# index.html > add code <br>-----------------<br>
+        < a href="{ % url 'book' %}"> Book your table now < /a> <br>
+        <br><br>
+        ___# _header.html > add list items for book & bookings >  code edits <br>-----------------<br>
+        < li>< a href="{ % url 'book' %}">Book< /a>< /li> <br>
+        <br>
+        < li>< a href="{ % url 'bookings' %}">Reservations< /a>< /li> <br>
+        <br>
+
+
+        <br><br>
+    </p>
+    <p>
+
+        ___#0204 views.py edits3 add the bookings() method <br>------------------------<br>
+        <a href="def" class="def">
+        def</a> bookings(request): <br>
+        | .. if request.method == 'POST': <br>
+        | ...... data = json.load(request) <br>
+        | ...... exist = Booking.objects.filter(reservation_date=data['reservation_date']).filter( <br>
+        | .......... reservation_slot = data['reservation_slot']).exists() <br>
+        | <br>
+        | ...... if exist == False: <br>
+        | .......... booking = Booking( <br>
+        | .............. first_name=data['first_name'], <br>
+        | .............. reservation_date=data['reservation_date'], <br>
+        | .............. reservation_slot=data['reservation_slot'], <br>
+        | .......... ) <br>
+        | .......... booking.save() <br>
+        | <br>
+        | ...... else: <br>
+        | .......... return HttpResponse("{'error':1}", content_type='application/json') <br>
+        | <br>
+
+
+        | .. date = request.GET.get('date', datetime.today().date()) <br>
+        | .. bookings = Booking.objects.all() <br>
+        | .. booking_json = serializers.serialize('json', bookings)  <br>
+        | .. return HttpResponse(booking_json, content_type='application/json') <br>
+        <br><br>
+    </p>
+    <p>
+        ____#204 ex. button with addEventListener() demo  <br>---------------------------<br>
+            < button id="my-button">Reserve< /button> <br>
+            < script> <br>
+        | ...... // <a href="red" class="red"> Select the button element by its id </a> <br>
+            | .. var myButton = document.getElementById("my-button"); <br>
+            | ...... // <a href="red" class="red"> Add a click event listener to the button </a> <br>
+            | .. myButton.addEventListener("click", function() {   <br>
+        | ...... // <a href="red" class="red"> This function will run when the button is clicked </a> <br>
+            | .. alert("You clicked the button!"); <br>
+            | .. }); <br>
+            < /script> <br>
+            <br><br>
+        _____#ex2 add addEventListener() to a section in the html page demo2 <br>--------------------------------<br>
+        < script> <br>
+        | .. var Button2 = document.getElementById("reservation_date"); <br>
+        | <br>
+        | .. Button2.addEventListener("change", function() { <br>
+        | ...... {getBookings()}; <br>
+        | .. }); <br>
+        < /script>
+
+
+    </p>
+    <p>
+        ____#204 book.html script tag good output for <br>
+        adding the reservation date to json html page for reservations <br>
+        ---------------------------<br>
+       < script> <br>
+
+        ________// <a href="red" class="red"> make variable for ' reservations_date ' </a> <br>
+        var ResDate = document.getElementById("reservation_date"); <br>
+        <br>
+        ________// <a href="red" class="red">put addEventListener() function to var </a> <br>
+        ResDate.addEventListener("change", function() { <br>
+        | .. { getBookings() }; <br>
+        }); <br>
+        < /script>
+
+    </p>
+    <p>
+        ___#204 ex1.  step 11 > run a for loop on array w/ numbers <br>-----------------------<br>
+        const data = []; <br>
+        <br>
+        for (var i = 1; i < data.length, i++) { <br>
+        | .. console.log(item.fields); <br>
+        } <br>
+        <br><br>
+        ___# ex2 run a for loop on array with strings <br>-----------------------<br>
+        const data = ["red", "blue", "green"]; <br>
+        <br>
+        for (var item of data) { <br>
+        | .. console.log(item); <br>
+        } <br>
+        <br><br>
+    </p>
+    <p>
+        ____# for loop with a push() function inside ex1 <br>-------------------------<br>
+        < script> <br>
+        |_____// create an empty array to store the values <br>
+        | .. var array = []; <br>
+        | <br>
+        |_____// use a for loop to iterate from 1 to 10 <br>
+        | .. for (var i = 1; i <= 10; i++) { <br>
+        |_____// use the push() method to add the value of i to the array <br>
+        | .. array.push(i); <br>
+        | .. } <br>
+        |_____// display the array in the console <br>
+        | .. console.log(array); <br>
+        < /script> <br>
+    </p>
+    <p>
+        ______#204
+        // add for loop on the  const ' data ' step11.3 <br>
+        const data = []; <br>
+        <br>
+        for (var item of data) { <br>
+        | .. console.log(item.fields); <br>
+        | .. reserved_slots.push(item.fields.reservation_slot); <br>
+        } <br>
+        <br>
+        // add new variable and assign a string -step12 <br>
+        var slot_options = " < option value="0" disabled> Select time < /option> "
+        <br><br>
+        for (var i = 11, i < 20, i++) { <br>
+        | .. const label = formatTime(i); <br>
+        | .. if reserved.slots.includes(i) == True: <br>
+        | ...... slot_options += '< option value=${i} disabled> ${label} < /option>' <br>
+        | <br>
+        | .. else: <br>
+        | ...... slot_options += '< option value=${i}> $ {label} < /option>' <br>
+        } <br>
+
+
+
+    </p>
+
+
+
+        <br><br>
+        <a href="#topg" name="botp">Link to top page</a>
+</body>
+</html>

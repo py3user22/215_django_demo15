@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+{% extends 'base.html' %}
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservations demo 213</title>
+</head>
+{% block content %}
+<body>
+    <h1>Reservations</h1>
+    <h2>Reservation date:</h2>
+    {% for reservation in reservations %}
+        <p>
+            {{ reservation.first_name }}: {{ reservation.reservation_date }}
+        </p>
+    {% endfor %}
+
+</body>
+
+{% endblock %}
+</html>

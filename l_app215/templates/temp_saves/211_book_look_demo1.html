@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        p {padding: 5px; border: 2px green dashed;} .div3 {color:purple;}
+        .sect {color: red;} .div {color: green;} .oran {color: orange;}
+    </style>
+    <title>211_book_look_demo1</title>
+</head>
+<body>
+    <h2>211_book_look_demo1</h2>
+    <p>
+        ___# ex211 basic outline  <br>------------------------<br>
+        section <br>
+        | .. |-->article <br>
+        | ........... |--> h1 <br>
+        | ........... |--> div <br>
+        | .................. |--> div <br>
+        | ......................... |--> form <br>
+        | ................................ |--> p <br>
+        <br><br>
+    </p>
+    <p>
+        ___# ex211 page header section demo <br>------------------------<br>
+        { % extends 'base.html' %} <br>
+        { % load static %} <br><br>
+        { % block content %} <br>
+        <br>
+    </p>
+    <p>
+        ___# ex211 start from top <br>------------------------<br>
+        <a href="sect" class="sect"> < section> </a> <br>
+        | .. <a href="arti" class="arti"> < article></a> <br>
+        | ...... <a href="div" class="div"> < div class="row"> </a> <br>
+        | <br>
+        | .......... <a href="div" class="oran"> < div class="column"></a> <br>
+        | .................. <a href="form" class="form"> < form </a> id="form" method="post" action=""> <br>
+        | ........................ {% csrf_token %} <br>
+        | ........................ {{ form.as_p }} <br>
+        | ........................ < button type="button" id="button">Reserve < /button> <br>
+
+
+        | .................. <a href="form" class="form"> < form> </a> <br>
+
+        | .......... <a href="div" class="oran"> < div></a> <br>
+        | <br>
+        | .......... <a href="div" class="oran"> < div class="column"></a> <br>
+        | .................. < h2> Bookings For < span id="today"> < /span> < /h2> <br>
+        | .................. <a href="div3" class="div3"> < div</a> id="bookings"> <br>
+        | .................. <a href="div3" class="div3"> < /div> </a> <br>
+
+        | .......... <a href="div" class="oran"> < div></a> <br>
+        | <br>
+
+        | ...... <a href="div" class="div"> < /div> </a> <br>
+        | .. <a href="arti" class="arti"> < /article></a> <br>
+        <a href="sect" class="sect"> < /section> </a> <br>
+
+
+
+
+        <br><br>{% endblock %}
+    </p>
+    <p>
+        ___models.py# ex211 model with date field and putting in html  <br>------------------------Step 1: create model<br>
+        <a href="clas" class="clas">class</a> Task(models.Model): <br>
+        | .. name = models.CharField(max_length=100, help_text="Enter your name here")  <br>
+        | .. due_date = models.DateField() <br>
+
+        <br><br>
+        ___views.py# create view function passing the model object to the template <br>-------------------------Step 2: create view <br>
+        <a href="div3" class="div3">from .models import Task </a> <br>
+        <a href="div3" class="div3">from django.shortcuts import render </a> <br>
+        <br>
+        <a href="div" class="div">def </a> tasks1(request): <br>
+        | .. tasks = Task.objects.all() <br>
+        | .. return render(request, 'tasks.html', {'tasks': tasks}) <br>
+
+        <br><br>
+        ___tasks.html # use for loop to iterate over the tasks & display name & due date. <br>
+        note: can assign an id attribute to each due date element using task id. <br>
+        <br>-------------------------Step 3: use for loop <br>
+        { % for task in tasks1 %} <br>
+        < p> <br>
+        | ...... {{ task.name }}: < span id="due_date_{{ task.id }}">{{ task.due_date }} < /span> <br>
+        < /p> <br>
+        { % endfor %} <br>
+
+
+
+        <br><br>
+
+        <br>-------------------------Step 4: add script tag <br>
+        < script> <br>
+        | .. var element_id = "due_date_1"; <br>
+        | <br>
+        | .. var element = document.getElementById(element_id); <br>
+        | <br>
+        | .. var element_value = element.innerHTML;
+        | <br>
+        | .. console.log(element_value); <br>
+        < /script> <br>
+        <br><br>
+    </p>
+
+    <p>
+        ___# ex211 script tag for addEventListener demo1 <br>
+        Notes: "button:s" means button with type submit or can use "< button:su> < /button:su><br>
+
+        <br>------------------------ html script tag edits<br>
+        <a href="sect" class="sect"> < script> </a> <br>
+        | .. const form = document.getElementById('form'); <br>
+        | ...... form.addEventListener("button:s", submitHandler); <br>
+        | <br>
+        | ...... function submitHandler(e) { <br>
+        | .......... e.preventDefault(); <br>
+        | <br>
+        | .......... fetch(form.action, {method:'POST', body: new BookingForm(ModelForm)}) <br>
+        | .......... .then(response=>response.json()) <br>
+        | .......... .then(data=>{ <br>
+        | ............... if (data.message === 'success') { <br>
+        | ..................... alert('Success!'); <br>
+        | ..................... form.reset() <br>
+        | ............... } <br>
+        | .......... }); <br>
+        | <br>
+        | ...... } <br>
+        <a href="sect" class="sect"> < /script> </a> <br>
+
+        <br><br>
+    </p>
+    <p>
+        ___views.py# ex211 ' bookings ' method create  <br>------------------------<br>
+        <a href="div" class="div">def</a> <b><i>bookings</i></b>(request): <br>
+        | .. if request.method == 'POST': <br>
+        | ...... data = json.load(request) <br>
+        | ...... exist = Booking.objects.filter(reservation_date=data['reservation_date']).filter( <br>
+        | .......... reservation_slot=data['reservation_slot']).exists() <br>
+        | ...... if exist == False: <br>
+        | .......... booking = Booking( <br>
+        | ............... first_name = data['first_name'], <br>
+        | ............... reservation_date = data['reservation_date'], <br>
+        | ............... reservation_slot = data['reservation_slot'], <br>
+        | .......... ) <br>
+        | ...... else: <br>
+        | .......... return HttpResponse( "{'error':1}", content_type='application/json') <br>
+        | <br>
+        | .. date = request.GET.get('date', datetime.today().date()) <br>
+        | <br>
+        | .. bookings = Booking.objects.all().filter(reservation_date=date)  <br>
+        | .. booking_json = serializers.serialize('json', bookings) <br>
+        | <br>
+        | .. return HttpResponse(booking_json, content_type='application/json') <br>
+        <br><br>
+    </p>
+
+    <p>
+        ___book.html # ex211 add h1 and edit script tag <br>------------------------ lab2 step11<br>
+        <a href="sect" class="sect"> < script> </a> <br>
+        | <br>
+        | .. console.log("Hello JesusG was here211"); <br>
+        | .. document.getElementById('id_reservation_date')
+            <br>
+
+
+
+        <a href="sect" class="sect"> < /script> </a> <br>
+        <br><br>
+    </p>
+
+    <p>
+        ___# ex212 form action="" notes: <br>------------------------book.html <br>
+        action="" tells browser to return the form data to URL /your-name/, using POST method <br>
+        <br>
+        < form action="/your-name/" method="post"> <br>
+        | .. < label for=<a href="oren" class="oren">"your_name"</a> > Your name: < /label> <br>
+        | .. < input id=<a href="oren" class="oren">
+        "your_name"</a>  name="your_name" type="text" value="{{ current_name }}"> <br>
+        | .. < input type="submit" value="OK"> <br>
+        < /form>
+        <br><br>
+    </p>
+    <p>
+        ___# ex212 span tag notes and demo <br>
+        Notes: span is inline across and can be used to highlight certain words or phrases <br>
+        ------------------------book.html<br>
+                        <!--Begin col-->
+        < div class="column"> <br>
+        | .. < h2>Bookings For <br>
+        | ...... < span id="spany" style="color:red; font-weight:bold;"  > <br>
+        | ........... date enter here! <br>
+        | ...... < /span> <br>
+        | .. < /h2> <br>
+        | .. < p>Date: < span class="event-date" id="spany2" style="background-color: lightgreen;" > <br>
+        | .......... Match date above press reserve with data filled. <br>
+        | .. < /span> <br>
+        | .......... {{ form.reservation_date }} <br>
+        | .. < /p> <br>
+        <br><br>
+    </p>
+    <p>
+        ___# ex212 document.getElementById notes and demo <br>------------------------views.py<br>
+        <a href="sect" class="sect">
+            from django.shortcuts import render <br>
+            from .models import Event <br>
+        </a><br>
+        <a href="div" class="div">
+            def</a> <a href="oran" class="oran">event_list</a>(request): <br>
+            | .. filtered_events = Event.objects.filter(reservation_date=date) <br>
+            |<br>
+            | .. return render(request, 'event_list.html', {'events': filtered_events}) <br>
+        <br><br>
+
+        ___events_list.html #212 <br>------------------------<br>
+        < body> <br>
+        | .. < h1> Filtered Events < /h1> <br>
+        | .. < ul> <br>
+        | ...... { % for event in events %} <br>
+        | ............ < li> <br>
+        | ..................{{ event.name }} - {{ event.reservation_date}} <br>
+        | ............ < /li> <br>
+        | ...... { % endfor %} <br>
+        | .. < /ul> <br>
+        < /body> <br>
+
+
+
+
+    </p>
+    <p>
+        ___# ex213 create new html template that has the output wanted  <br>------------------------<a href="oran" class="oran">index213.html </a> <br>
+        { % extends 'base.html' %} <br>
+        { % load static %} <br>
+        <br>
+        { % block content %} <br>
+        < body> <br>
+        | .. < h1> Reservations < /h1> <br>
+        | .. < h2> Reservation date: < /h2> <br>
+        | .. { % for reservation in reservations %} <br>
+        | ...... < p> <br>
+        | .......... { { reservation.first_name }}: { { reservation.reservation_date }} <br>
+        | ...... < /p> <br>
+        | .. { % endfor %} <br>
+        < /body> <br>
+        { % endblock %} <br>
+        <br><br>
+        <a href="oran" class="oran">
+            ___ views.py </a> > create new view to display the template <br>--------------------------------<br>
+        <a href="div" class="div">
+            def </a> event_list(request):  <br>
+        | .. reservations = Booking.objects.all() <br>
+        | .. return render(request, 'index213.html', {'reservations':reservations}) <br>
+        <br><br>
+        <a href="oran" class="oran">
+            ___ urls.py </a> > create new URL to display the view <br>----------------------------<br>
+        urlpatterns = [ path('rdate/', views.event_list, name="rdate")  ] <br>
+        <br><br>
+
+
+
+
+
+
+        <br><br>
+    </p>
+    <p>
+        ___# ex212  <br>------------------------<br>
+
+        <br><br>
+    </p>
+    <p>
+        ___# ex212  <br>------------------------<br>
+
+        <br><br>
+    </p>
+
+
+
+</body>
+</html>

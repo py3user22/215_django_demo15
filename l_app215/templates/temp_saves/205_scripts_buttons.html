@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        p {padding: 5px; border: 2px green dashed;}
+        .sup {color: purple;} .def {color: orange;} a:hover {color: green;}
+    </style>
+    <title>205_scripts_buttons</title>
+</head>
+<body>
+    <h2>205_scripts_buttons</h2>
+    <p>
+        ___ 205_scripts_buttons save1 unedited  <br>----------------------<br>
+        < script> <br>
+        <br>
+  const date = new Date() <br>
+  document.getElementById('reservation_date').value = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate().toString().padStart(2, "0")}` <br>
+        <br>
+  console.log(document.getElementById('reservation_date').value) <br>
+  getBookings() <br>
+    <br>
+    <br>
+  /*  Step 10: Part two */ <br>
+    <br>
+    <br>
+  function getBookings() { <br>
+    let reserved_slots = [] <br>
+    const date = document.getElementById('reservation_date').value <br>
+    document.getElementById('today').innerHTML = date <br>
+    <br>
+    fetch("{% url 'bookings' %}" + '?date=' + date) <br>
+      .then(r => r.json()) <br>
+      .then(data => { <br>
+        reserved_slots = [] <br>
+        bookings = '' <br>
+        <br>
+        /* Step 11: Part three */ <br>
+        <br><br>
+
+        /* Step 12: Part four  */ <br>
+        <br><br>
+
+        document.getElementById('reservation_slot').innerHTML = slot_options <br>
+        if(bookings==''){ <br>
+          bookings = "No bookings" <br>
+        } <br>
+        document.getElementById('bookings').innerHTML = bookings <br>
+      }) <br>
+  } <br>
+    <br>
+  function formatTime(time) { <br>
+    const ampm = time < 12 ? 'AM' : 'PM' <br>
+    const t = time < 12 ? time : time > 12 ? time - 12 : time <br>
+    const label = `${t} ${ampm}` <br>
+    return label <br>
+  } <br>
+    <br><br>
+
+  document.getElementById('button').addEventListener('click', function (e) { <br>
+    const formdata = { <br>
+      first_name: document.getElementById('first_name').value, <br>
+      reservation_date: document.getElementById('reservation_date').value, <br>
+      reservation_slot: document.getElementById('reservation_slot').value, <br>
+    } <br>
+    <br>
+    fetch("{% url 'bookings' %}", { method: 'post', body: JSON.stringify(formdata) }) <br>
+      .then(r => r.text()) <br>
+      .then(data => { <br>
+        getBookings() <br>
+      }) <br>
+  }) <br>
+< /script> <br>
+        <br><br>
+    </p>
+    <p>
+        ____# 205 edits to the script tag in book.html <br>-------------------------<br>
+
+
+
+
+
+        <br><br>
+    </p>
+
+
+</body>
+</html>
